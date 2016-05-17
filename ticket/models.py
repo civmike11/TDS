@@ -15,7 +15,7 @@ class Customer (models.Model):
     middle_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30)
     address = models.CharField(max_length=200)
-    address_2 = models.CharField(max_length=200)
+    address_2 = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=30)
     country = CountryField()
     zipcode = models.CharField(max_length=10)
@@ -24,6 +24,9 @@ class Customer (models.Model):
 
     def __str__(self):
         return "{0} {1}".format(self.first_name, self.last_name)
+
+    class Meta:
+        db_table = 'customer'
 
 
 class Employee (models.Model):
@@ -38,6 +41,9 @@ class Employee (models.Model):
     department = models.CharField(choices=dep, max_length=2)
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
+
+    class Meta:
+        db_table = 'employee'
 
     @classmethod
     def get_technician_users(cls):
@@ -66,7 +72,7 @@ class Ticket (models.Model):
     ticket_id = models.AutoField(primary_key=True)
     customer_id = models.ForeignKey(Customer)
     priority = models.CharField(choices=priority_choices, default=None, max_length=2)
-    created_by = models.TextField(max_length=30)
+    created_by = models.CharField(max_length=30)
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
     status = models.CharField(choices=status_choices, default=status_choices[0][0], max_length=2)
@@ -76,7 +82,14 @@ class Ticket (models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.ticket_id
+        return str(self.ticket_id)
+
+    @classmethod
+    def get_all_active_tickets(cls):
+        return Ticket.objects.filter(completed=False)
+
+    class Meta:
+        db_table = 'ticket'
 
 
 
