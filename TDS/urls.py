@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic.base import RedirectView
+
 from . import views
 urlpatterns = [
+    url(r'^', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^home/', views.home),
-    url(r'^ticket/', include('ticket.urls'))
+    url(r'^ticket/', include('ticket.urls')),
+    url(r'^$', RedirectView.as_view(url='/home'))
 ]
